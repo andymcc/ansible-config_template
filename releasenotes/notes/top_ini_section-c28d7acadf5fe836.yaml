@@ -1,0 +1,5 @@
+---
+features:
+  - Allow the top section in an ini file to be specified
+    using the ``top_ini_section`` variable when calling a
+    ``config_template`` task. This defaults to ``DEFAULT``.

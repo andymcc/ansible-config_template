@@ -58,6 +58,11 @@ options:
     choices:
       - True
       - False
+  top_ini_section:
+    description:
+      - Specify asection that should always be the top section in an ini
+        configuration file. This is often 'global' for example.
+    default: 'DEFAULT'
 
 author: Kevin Carter
 """
@@ -68,6 +73,7 @@ EXAMPLES = """
       src: templates/test.ini.j2
       dest: /tmp/test.ini
       config_overrides: {}
+      top_ini_section: 'global'
       config_type: ini
 
   - name: run config template json

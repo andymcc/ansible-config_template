@@ -137,6 +137,7 @@ class ConfigTemplateParser(ConfigParser.RawConfigParser):
     def __init__(self, *args, **kwargs):
         self._comments = {}
         self.ignore_none_type = bool(kwargs.pop('ignore_none_type', True))
+        self.top_ini_section = str(kwargs.pop('top_ini_section', 'DEFAULT'))
         ConfigParser.RawConfigParser.__init__(self, *args, **kwargs)
 
     def _write(self, fp, section, key, item, entry):
@@ -171,10 +172,10 @@ class ConfigTemplateParser(ConfigParser.RawConfigParser):
                 fp.write(''.join(comsect[optname]))
 
         if self._defaults:
-            _write_comments('DEFAULT')
-            fp.write("[%s]\n" % 'DEFAULT')
+            _write_comments(self.top_ini_section)
+            fp.write("[%s]\n" % self.top_ini_section)
             for key, value in sorted(self._defaults.items()):
-                _write_comments('DEFAULT', optname=key)
+                _write_comments(self.top_ini_section, optname=key)
                 self._write_check(fp, key=key, value=value)
             else:
                 fp.write("\n")
@@ -234,7 +235,7 @@ class ConfigTemplateParser(ConfigParser.RawConfigParser):
                     sectname = mo.group('header')
                     if sectname in self._sections:
                         cursect = self._sections[sectname]
-                    elif sectname == 'DEFAULT':
+                    elif sectname == self.top_ini_section:
                         cursect = self._defaults
                     else:
                         cursect = self._dict()
@@ -323,7 +324,7 @@ class ActionModule(ActionBase):
                     items = ','.join(to_text(i) for i in items)
                 self._option_write(
                     config,
-                    'DEFAULT',
+                    self.top_ini_section,
                     section,
                     items
                 )
